@@ -30,8 +30,8 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build BitzArt.Blazor.Cookies.sln --configuration Release /p:Version=${VERSION}
-          dotnet pack BitzArt.Blazor.Cookies.sln --configuration Release /p:Version=${VERSION} --no-build --output .
+          dotnet build Blazor.Cookies.sln --configuration Release /p:Version=${VERSION}
+          dotnet pack Blazor.Cookies.sln --configuration Release /p:Version=${VERSION} --no-build --output .
 
       - name: Push
         run: |
