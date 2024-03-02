@@ -1,0 +1,72 @@
+﻿@page "/cookies"
+@rendermode @(new InteractiveAutoRenderMode())
+@inject ICookieService CookieService
+
+<PageTitle>Blazor.Cookies | Client-side rendered page</PageTitle>
+
+<div style="margin-top: 1rem;">
+    <InputText @bind-Value="key" placeholder="key" />
+    <InputText @bind-Value="value" placeholder="value" />
+    <div style="margin-top: 1rem;">
+        <button class="btn btn-primary" @onclick="SetCookieAsync">Set Cookie</button>
+        <button class="btn btn-primary" @onclick="RemoveCookieAsync">Remove Cookie</button>
+    </div>
+</div>
+
+<div style="margin-top: 1rem;">
+    <button class="btn btn-primary" @onclick="LoadCookiesAsync">Load Cookies</button>
+</div>
+
+<div style="margin-top: 1rem;">
+    <h3>Cookies</h3>
+    <div>
+        @if (cookies is null || !cookies.Any())
+        {
+            <div>
+                Waiting to load cookies...
+            </div>
+        }
+        else
+        {
+            <pre>
+                @JsonSerializer.Serialize(cookies, cookiesSerializerOptions);
+            </pre>
+        }
+    </div>
+</div>
+@code {
+
+    private IEnumerable<Cookie>? cookies;
+
+    private JsonSerializerOptions cookiesSerializerOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true
+        };
+
+    private string? key;
+    private string? value;
+
+    private async Task SetCookieAsync()
+    {
+        var expiration = DateTimeOffset.UtcNow.AddDays(1);
+
+        if (key is not null && value is not null) await CookieService.SetAsync(key, value, expiration);
+    
+        await LoadCookiesAsync();
+    }
+
+    private async Task RemoveCookieAsync()
+    {
+        await CookieService.RemoveAsync(key!);
+
+        await LoadCookiesAsync();
+    }
+
+    private async Task LoadCookiesAsync()
+    {
+        cookies = await CookieService.GetAllAsync();
+
+        StateHasChanged();
+    }
+}

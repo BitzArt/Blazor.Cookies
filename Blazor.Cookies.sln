@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{2E5D89F5-108F-4E1D-B9D7-D86A531130CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies", "src\BitzArt.Blazor.Cookies\BitzArt.Blazor.Cookies.csproj", "{879DF7E1-E2C3-4315-8FE4-FD700330F28D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FE7AAF4D-63E3-41CA-8E4F-D16CC839D8DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.Tests", "tests\BitzArt.Blazor.Cookies.Tests\BitzArt.Blazor.Cookies.Tests.csproj", "{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.SampleApp", "sample\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp.csproj", "{F7D5FB57-A0A9-4C95-917C-2122244107CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.SampleApp.Client", "sample\BitzArt.Blazor.Cookies.SampleApp\BitzArt.Blazor.Cookies.SampleApp.Client\BitzArt.Blazor.Cookies.SampleApp.Client.csproj", "{440A5264-6418-489D-9DFB-E434029AC8C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{53C2EA4F-8EA8-41FE-A091-D85B0314B1F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{890E8E99-1FCA-4A48-8189-92FF199211D8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\Publish.yml = .github\workflows\Publish.yml
+		.github\workflows\Tests.yml = .github\workflows\Tests.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{879DF7E1-E2C3-4315-8FE4-FD700330F28D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{879DF7E1-E2C3-4315-8FE4-FD700330F28D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{879DF7E1-E2C3-4315-8FE4-FD700330F28D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{879DF7E1-E2C3-4315-8FE4-FD700330F28D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7D5FB57-A0A9-4C95-917C-2122244107CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7D5FB57-A0A9-4C95-917C-2122244107CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7D5FB57-A0A9-4C95-917C-2122244107CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7D5FB57-A0A9-4C95-917C-2122244107CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440A5264-6418-489D-9DFB-E434029AC8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440A5264-6418-489D-9DFB-E434029AC8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440A5264-6418-489D-9DFB-E434029AC8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440A5264-6418-489D-9DFB-E434029AC8C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{879DF7E1-E2C3-4315-8FE4-FD700330F28D} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
+		{5C41CFD6-7636-4536-8EF6-7FFE7DBA9BC8} = {FE7AAF4D-63E3-41CA-8E4F-D16CC839D8DA}
+		{F7D5FB57-A0A9-4C95-917C-2122244107CF} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
+		{440A5264-6418-489D-9DFB-E434029AC8C9} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
+		{890E8E99-1FCA-4A48-8189-92FF199211D8} = {53C2EA4F-8EA8-41FE-A091-D85B0314B1F7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43738754-874B-41F7-8B6C-087023E2CD94}
+	EndGlobalSection
+EndGlobal
