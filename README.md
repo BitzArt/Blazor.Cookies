@@ -1,7 +1,7 @@
 ![Tests](https://github.com/BitzArt/Blazor.Cookies/actions/workflows/Tests.yml/badge.svg)
 
-[![NuGet version](https://img.shields.io/nuget/v/BitzArt.Cookies.Auth.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/BitzArt.Cookies.Auth.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
+[![NuGet version](https://img.shields.io/nuget/v/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
+[![NuGet downloads](https://img.shields.io/nuget/dt/BitzArt.Blazor.Cookies.svg)](https://www.nuget.org/packages/BitzArt.Blazor.Cookies/)
 
 ## Overview
 
