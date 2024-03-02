@@ -12,6 +12,7 @@ internal class CookieService(IJSRuntime js) : ICookieService
         return raw.Split("; ").Select(x =>
         {
             var parts = x.Split("=");
+            if (parts.Length != 2) throw new Exception($"Invalid cookie format: '{x}'.");
             return new Cookie(parts[0], parts[1]);
         });
     }
@@ -24,19 +25,18 @@ internal class CookieService(IJSRuntime js) : ICookieService
 
     public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
-        if (!cookie.Expiration.HasValue) throw new Exception("Expiration is required when setting cookie.");
-        await SetAsync(cookie.Key, cookie.Value, cookie.Expiration!.Value, cancellationToken);
+        await SetAsync(cookie.Key, cookie.Value, cookie.Expiration, cancellationToken);
     }
 
-    public async Task SetAsync(string key, string value, DateTimeOffset expiration, CancellationToken cancellationToken = default)
+    public async Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(key)) throw new Exception("Key is required when setting a cookie.");
         await js.InvokeVoidAsync("eval", $"document.cookie = \"{key}={value}; expires={expiration:R}; path=/\"");
     }
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(key)) throw new Exception("Key is required when removing cookie.");
-
+        if (string.IsNullOrWhiteSpace(key)) throw new Exception("Key is required when removing a cookie.");
         await js.InvokeVoidAsync("eval", $"document.cookie = \"{key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/\"");
     }
 }
