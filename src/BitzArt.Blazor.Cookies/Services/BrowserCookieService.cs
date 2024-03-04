@@ -2,7 +2,7 @@
 
 namespace BitzArt.Blazor.Cookies;
 
-internal class CookieService(IJSRuntime js) : ICookieService
+internal class BrowserCookieService(IJSRuntime js) : ICookieService
 {
     public async Task<IEnumerable<Cookie>> GetAllAsync()
     {

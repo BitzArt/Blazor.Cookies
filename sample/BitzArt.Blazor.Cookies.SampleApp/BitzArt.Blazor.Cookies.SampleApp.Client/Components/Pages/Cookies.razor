@@ -14,24 +14,11 @@
 </div>
 
 <div style="margin-top: 1rem;">
-    <button class="btn btn-primary" @onclick="LoadCookiesAsync">Load Cookies</button>
-</div>
-
-<div style="margin-top: 1rem;">
     <h3>Cookies</h3>
     <div>
-        @if (cookies is null || !cookies.Any())
-        {
-            <div>
-                Waiting to load cookies...
-            </div>
-        }
-        else
-        {
-            <pre>
-                @JsonSerializer.Serialize(cookies, cookiesSerializerOptions);
-            </pre>
-        }
+        <pre>
+            @JsonSerializer.Serialize(cookies, cookiesSerializerOptions);
+        </pre>
     </div>
 </div>
 @code {
@@ -46,6 +33,12 @@
 
     private string? key;
     private string? value;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadCookiesAsync();
+    }
 
     private async Task SetCookieAsync()
     {

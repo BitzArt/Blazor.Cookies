@@ -23,5 +23,23 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Client</_Parameter1>
+		</AssemblyAttribute>
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Server</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Tests</_Parameter1>
+		</AssemblyAttribute>
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Client.Tests</_Parameter1>
+		</AssemblyAttribute>
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Server.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 
 </Project>

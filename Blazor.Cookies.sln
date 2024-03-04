@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\Tests.yml = .github\workflows\Tests.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Cookies.Client", "src\BitzArt.Blazor.Cookies.Client\BitzArt.Blazor.Cookies.Client.csproj", "{5E61195E-5AB8-469E-B848-CDB0228F3984}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Cookies.Server", "src\BitzArt.Blazor.Cookies.Server\BitzArt.Blazor.Cookies.Server.csproj", "{9DDC9769-C0C6-452C-97E1-A11991976106}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,14 @@ Global
 		{440A5264-6418-489D-9DFB-E434029AC8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{440A5264-6418-489D-9DFB-E434029AC8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{440A5264-6418-489D-9DFB-E434029AC8C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E61195E-5AB8-469E-B848-CDB0228F3984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E61195E-5AB8-469E-B848-CDB0228F3984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E61195E-5AB8-469E-B848-CDB0228F3984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E61195E-5AB8-469E-B848-CDB0228F3984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DDC9769-C0C6-452C-97E1-A11991976106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DDC9769-C0C6-452C-97E1-A11991976106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DDC9769-C0C6-452C-97E1-A11991976106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DDC9769-C0C6-452C-97E1-A11991976106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +69,8 @@ Global
 		{F7D5FB57-A0A9-4C95-917C-2122244107CF} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
 		{440A5264-6418-489D-9DFB-E434029AC8C9} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
 		{890E8E99-1FCA-4A48-8189-92FF199211D8} = {53C2EA4F-8EA8-41FE-A091-D85B0314B1F7}
+		{5E61195E-5AB8-469E-B848-CDB0228F3984} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
+		{9DDC9769-C0C6-452C-97E1-A11991976106} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43738754-874B-41F7-8B6C-087023E2CD94}
