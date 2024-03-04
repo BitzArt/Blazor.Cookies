@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BitzArt.Blazor.Cookies.Server\BitzArt.Blazor.Cookies.Server.csproj" />
     <ProjectReference Include="..\BitzArt.Blazor.Cookies.SampleApp.Client\BitzArt.Blazor.Cookies.SampleApp.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
   </ItemGroup>
 
 </Project>

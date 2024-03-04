@@ -17,7 +17,7 @@ public static class AddBlazorCookiesExtension
         {
             var httpContextAccessor = x.GetRequiredService<IHttpContextAccessor>();
             var httpContext = httpContextAccessor.HttpContext;
-            var isPrerendering = (httpContext is not null);
+            var isPrerendering = (httpContext is not null && !httpContext.Response.HasStarted);
 
             return isPrerendering
                 ? x.GetRequiredService<HttpContextCookieService>()
