@@ -13,7 +13,7 @@ namespace BitzArt.Blazor.Cookies.SampleApp
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
 
-            builder.Services.AddBlazorCookies();
+            builder.AddBlazorCookies();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();

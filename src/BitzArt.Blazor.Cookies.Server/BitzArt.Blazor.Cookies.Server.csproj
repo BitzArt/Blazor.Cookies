@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<PackageId>BitzArt.Blazor.Cookies.Server</PackageId>
+		<Authors>BitzArt</Authors>
+		<Description>BitzArt.Blazor.Cookies - Server package</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/BitzArt/Blazor.Cookies</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/BitzArt/Blazor.Cookies</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\BitzArt.Blazor.Cookies\BitzArt.Blazor.Cookies.csproj" />
+	</ItemGroup>
+
+</Project>

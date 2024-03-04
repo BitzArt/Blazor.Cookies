@@ -8,7 +8,7 @@ namespace BitzArt.Blazor.Cookies.SampleApp.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-            builder.Services.AddBlazorCookies();
+            builder.AddBlazorCookies();
 
             await builder.Build().RunAsync();
         }
