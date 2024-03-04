@@ -36,3 +36,5 @@ jobs:
       - name: Push
         run: |
           dotnet nuget push BitzArt.Blazor.Cookies.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
+          dotnet nuget push BitzArt.Blazor.Cookies.Client.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
+          dotnet nuget push BitzArt.Blazor.Cookies.Server.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
