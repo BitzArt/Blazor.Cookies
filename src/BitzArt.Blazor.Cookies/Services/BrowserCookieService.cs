@@ -18,7 +18,7 @@ internal class BrowserCookieService(IJSRuntime js) : ICookieService
 
     public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
-        await SetAsync(cookie.Name, cookie.Value, cookie.Expiration, cancellationToken);
+        await SetAsync(cookie.Key, cookie.Value, cookie.Expiration, cancellationToken);
     }
 
     public async Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
