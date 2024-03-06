@@ -18,16 +18,16 @@ internal class BrowserCookieService(IJSRuntime js) : ICookieService
 
     public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
-        await js.InvokeVoidAsync("cookieStore.set", new JsCookie(cookie));
+        await SetAsync(cookie.Name, cookie.Value, cookie.Expiration, cancellationToken);
     }
 
     public async Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
     {
-        await SetAsync(new Cookie(key, value, expiration), cancellationToken);
+        await js.InvokeVoidAsync("cookieStore.set", new JsCookie(key, value, expiration));
     }
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        await js.InvokeVoidAsync("cookieStore.remove", key);
+        await js.InvokeVoidAsync("cookieStore.delete", key);
     }
 }
