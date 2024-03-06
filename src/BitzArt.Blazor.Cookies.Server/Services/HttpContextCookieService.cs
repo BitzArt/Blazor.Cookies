@@ -21,12 +21,12 @@ internal class HttpContextCookieService : ICookieService
 
     public Task<Cookie?> GetAsync(string key)
     {
-        return Task.FromResult(_cache.FirstOrDefault(x => x.Key == key));
+        return Task.FromResult(_cache.FirstOrDefault(x => x.Name == key));
     }
 
     public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        var cookie = _cache.FirstOrDefault(x => x.Key == key);
+        var cookie = _cache.FirstOrDefault(x => x.Name == key);
         if (cookie is null) return Task.CompletedTask;
 
         _cache.Remove(cookie);
@@ -47,5 +47,5 @@ internal class HttpContextCookieService : ICookieService
     }
 
     public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
-        => SetAsync(cookie.Key, cookie.Value, cookie.Expiration, cancellationToken);
+        => SetAsync(cookie.Name, cookie.Value, cookie.Expiration, cancellationToken);
 }
