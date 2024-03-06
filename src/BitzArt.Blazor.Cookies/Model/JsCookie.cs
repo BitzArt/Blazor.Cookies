@@ -1,13 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace BitzArt.Blazor.Cookies;
+﻿namespace BitzArt.Blazor.Cookies;
 
 internal class JsCookie
 {
     public string? Name { get; set; }
     public string? Value { get; set; }
     public double? Expires { get; set; }
-    public string? Domain { get; set; }
     public string? Path { get; set; }
 
     public JsCookie(string name, string value, DateTimeOffset? expiration = null)
