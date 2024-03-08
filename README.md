@@ -7,6 +7,8 @@
 
 **BitzArt.Blazor.Cookies** is a nuget package that simplifies working with browser cookies in Blazor applications.
 
+You can use cookies in your Blazor applications as a way to store user's unique information, such as preferences, settings, or session / authentication data.
+
 - Built for dotnet 8+
 - Supports all Blazor United render modes
 - Supports Blazor prerendering
