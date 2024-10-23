@@ -12,7 +12,7 @@ public static class AddBlazorCookiesExtension
         return builder;
     }
 
-    public static IServiceCollection AddBlazorCookiesClient(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    private static IServiceCollection AddBlazorCookiesClient(this IServiceCollection services, ServiceLifetime lifetime)
     {
         services.Add(new ServiceDescriptor(typeof(ICookieService), typeof(BrowserCookieService), lifetime));
 
