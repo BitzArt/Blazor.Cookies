@@ -5,9 +5,17 @@ namespace BitzArt.Blazor.Cookies;
 
 public static class AddBlazorCookiesExtension
 {
-    public static WebAssemblyHostBuilder AddBlazorCookies(this WebAssemblyHostBuilder builder)
+    public static WebAssemblyHostBuilder AddBlazorCookies(this WebAssemblyHostBuilder builder, ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        builder.Services.AddScoped<ICookieService, BrowserCookieService>();
+        builder.Services.AddBlazorCookiesClient(lifetime);
+
         return builder;
+    }
+
+    public static IServiceCollection AddBlazorCookiesClient(this IServiceCollection services, ServiceLifetime lifetime)
+    {
+        services.Add(new ServiceDescriptor(typeof(ICookieService), typeof(BrowserCookieService), lifetime));
+
+        return services;
     }
 }
