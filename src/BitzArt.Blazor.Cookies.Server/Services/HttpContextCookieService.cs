@@ -47,7 +47,7 @@ internal class HttpContextCookieService : ICookieService
             if (cookie!.Equals(key, value, expiration)) return;
 
             // If the cookie already exists and the new value has changed,
-            // we remove the old one, before adding the new one.
+            // we remove the old one before adding the new one.
             await RemoveAsync(key, cancellationToken);
         }
 
