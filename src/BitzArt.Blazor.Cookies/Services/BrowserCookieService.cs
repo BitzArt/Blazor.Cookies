@@ -7,7 +7,7 @@ internal class BrowserCookieService(IJSRuntime js) : ICookieService
     public async Task<IEnumerable<Cookie>> GetAllAsync()
     {
         var raw = await js.InvokeAsync<string>("eval", "document.cookie");
-        if (string.IsNullOrWhiteSpace(raw)) return Enumerable.Empty<Cookie>();
+        if (string.IsNullOrWhiteSpace(raw)) return [];
 
         return raw.Split("; ").Select(x =>
         {
