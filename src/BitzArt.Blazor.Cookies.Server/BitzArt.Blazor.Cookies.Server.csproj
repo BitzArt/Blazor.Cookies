@@ -27,4 +27,10 @@
 	  <ProjectReference Include="..\BitzArt.Blazor.Cookies\BitzArt.Blazor.Cookies.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>BitzArt.Blazor.Cookies.Server.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
 </Project>

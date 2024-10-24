@@ -1,51 +1,65 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Http;
 
 namespace BitzArt.Blazor.Cookies;
 
 internal class HttpContextCookieService : ICookieService
 {
     private readonly HttpContext _httpContext;
-    private readonly List<Cookie> _cache;
+    private readonly Dictionary<string, Cookie> _cache;
 
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
     {
         _httpContext = httpContextAccessor.HttpContext!;
         _cache = _httpContext.Request.Cookies
-            .Select(x => new Cookie(x.Key, x.Value)).ToList();
+            .Select(x => new Cookie(x.Key, x.Value)).ToDictionary(cookie => cookie.Key);
     }
 
     public Task<IEnumerable<Cookie>> GetAllAsync()
     {
-        return Task.FromResult(_cache.ToList().AsEnumerable());
+        return Task.FromResult(_cache.Select(x => x.Value).ToList().AsEnumerable());
     }
 
     public Task<Cookie?> GetAsync(string key)
     {
-        return Task.FromResult(_cache.FirstOrDefault(x => x.Key == key));
+        if (_cache.TryGetValue(key, out var cookie)) return Task.FromResult<Cookie?>(cookie);
+
+        return Task.FromResult<Cookie?>(null);
     }
 
     public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        var cookie = _cache.FirstOrDefault(x => x.Key == key);
-        if (cookie is null) return Task.CompletedTask;
+        if (!_cache.TryGetValue(key, out _)) return Task.CompletedTask;
 
-        _cache.Remove(cookie);
+        _cache.Remove(key);
         _httpContext.Response.Cookies.Delete(key);
 
         return Task.CompletedTask;
     }
 
     public Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
+        => SetAsync(new Cookie(key, value, expiration), cancellationToken);
+
+    public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
-        _cache.Add(new Cookie(key, value, expiration));
-        _httpContext.Response.Cookies.Append(key, value, new CookieOptions
+        var alreadyExists = _cache.TryGetValue(cookie.Key, out var existingCookie);
+
+        if (alreadyExists)
         {
-            Expires = expiration,
+            // If the cookie already exists and the value has not changed,
+            // we don't need to update it.
+            if (existingCookie == cookie) return;
+
+            // If the cookie already exists and the new value has changed,
+            // we remove the old one before adding the new one.
+            await RemoveAsync(cookie.Key, cancellationToken);
+        }
+
+        _cache.Add(cookie.Key, cookie);
+        _httpContext.Response.Cookies.Append(cookie.Key, cookie.Value, new CookieOptions
+        {
+            Expires = cookie.Expiration,
             Path = "/",
         });
-        return Task.CompletedTask;
     }
-
-    public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
-        => SetAsync(cookie.Key, cookie.Value, cookie.Expiration, cancellationToken);
 }
