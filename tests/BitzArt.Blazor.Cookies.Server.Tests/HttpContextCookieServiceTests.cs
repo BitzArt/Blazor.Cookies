@@ -57,24 +57,16 @@ public class HttpContextCookieServiceTests
     private static TestServices CreateTestServices()
     {
         var httpContext = new DefaultHttpContext();
-        var accessor = new TestHttpContextAccessor(httpContext);
+        var accessor = new HttpContextAccessor
+        {
+            HttpContext = httpContext
+        };
         var logger = new LoggerFactory().CreateLogger<ICookieService>();
 
-        var cookieService = new HttpContextCookieService(accessor, httpContext.Features, logger);
+        var cookieService = new HttpContextCookieService(accessor, logger);
 
         return new TestServices(httpContext, accessor, cookieService);
     }
 
     private record TestServices(HttpContext HttpContext, IHttpContextAccessor HttpContextAccessor, ICookieService CookieService);
-
-    private class TestHttpContextAccessor(HttpContext httpContext) : IHttpContextAccessor
-    {
-        private HttpContext? _httpContext = httpContext;
-
-        public HttpContext? HttpContext
-        {
-            get => _httpContext;
-            set => _httpContext = value;
-        }
-    }
 }

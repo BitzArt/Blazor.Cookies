@@ -13,7 +13,7 @@ internal class HttpContextCookieService : ICookieService
 
     private IHeaderDictionary _responseHeaders { get; set; }
 
-    public HttpContextCookieService(IHttpContextAccessor httpContextAccessor, IFeatureCollection features, ILogger<ICookieService> logger)
+    public HttpContextCookieService(IHttpContextAccessor httpContextAccessor, ILogger<ICookieService> logger)
     {
         _httpContext = httpContextAccessor.HttpContext!;
         _logger = logger;
@@ -21,7 +21,7 @@ internal class HttpContextCookieService : ICookieService
         _requestCookies = _httpContext.Request.Cookies
             .Select(x => new Cookie(x.Key, x.Value)).ToDictionary(cookie => cookie.Key);
 
-        _responseHeaders = features.GetRequiredFeature<IHttpResponseFeature>().Headers;
+        _responseHeaders = _httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers;
     }
 
     public Task<IEnumerable<Cookie>> GetAllAsync()
