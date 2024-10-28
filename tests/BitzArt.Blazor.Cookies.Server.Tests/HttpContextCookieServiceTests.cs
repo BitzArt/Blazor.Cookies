@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
 
 namespace BitzArt.Blazor.Cookies.Server.Tests;
 
@@ -15,12 +17,14 @@ public class HttpContextCookieServiceTests
 
         // Assert
         Assert.Single(httpContext.Response.Headers);
-        Assert.Single(httpContext.Response.Headers["Set-Cookie"]);
-        Assert.Contains("key=value", httpContext.Response.Headers["Set-Cookie"].First());
+        var values = httpContext.Response.Headers.SetCookie;
+        Assert.Single(values);
+        var value = values.First();
+        Assert.Equal("key=value; path=/", value);
     }
 
     [Fact]
-    public async Task RemoveCookie_AfterSetCookie_ShouldRemoveCookie()
+    public async Task RemoveCookie_AfterSetCookie_ShouldRemovePending()
     {
         // Arrange
         (var httpContext, _, var service) = CreateTestServices();
@@ -31,9 +35,8 @@ public class HttpContextCookieServiceTests
         await service.RemoveAsync("key");
 
         // Assert
-        Assert.Single(httpContext.Response.Headers);
-        Assert.Single(httpContext.Response.Headers["Set-Cookie"]);
-        Assert.Contains("key=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=", httpContext.Response.Headers["Set-Cookie"].First());
+        Assert.Empty(httpContext.Response.Headers);
+        Assert.True(httpContext.Response.Headers.SetCookie.Count == 0);
     }
 
     [Fact]
@@ -47,15 +50,17 @@ public class HttpContextCookieServiceTests
         await service.SetAsync("key", "value2", null);
 
         // Assert
-        Assert.Single(httpContext.Response.Headers);
+        var values = httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers.SetCookie;
+        Assert.Single(values);
     }
 
     private static TestServices CreateTestServices()
     {
         var httpContext = new DefaultHttpContext();
         var accessor = new TestHttpContextAccessor(httpContext);
+        var logger = new LoggerFactory().CreateLogger<ICookieService>();
 
-        var cookieService = new HttpContextCookieService(accessor);
+        var cookieService = new HttpContextCookieService(accessor, httpContext.Features, logger);
 
         return new TestServices(httpContext, accessor, cookieService);
     }
