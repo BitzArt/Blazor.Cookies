@@ -1,38 +1,51 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace BitzArt.Blazor.Cookies;
 
 internal class HttpContextCookieService : ICookieService
 {
     private readonly HttpContext _httpContext;
-    private readonly Dictionary<string, Cookie> _cache;
+    private readonly Dictionary<string, Cookie> _requestCookies;
 
-    public HttpContextCookieService(IHttpContextAccessor httpContextAccessor)
+    private readonly ILogger _logger;
+
+    private IHeaderDictionary _responseHeaders { get; set; }
+
+    public HttpContextCookieService(IHttpContextAccessor httpContextAccessor, IFeatureCollection features, ILogger<ICookieService> logger)
     {
         _httpContext = httpContextAccessor.HttpContext!;
-        _cache = _httpContext.Request.Cookies
+        _logger = logger;
+
+        _requestCookies = _httpContext.Request.Cookies
             .Select(x => new Cookie(x.Key, x.Value)).ToDictionary(cookie => cookie.Key);
+
+        _responseHeaders = features.GetRequiredFeature<IHttpResponseFeature>().Headers;
     }
 
     public Task<IEnumerable<Cookie>> GetAllAsync()
     {
-        return Task.FromResult(_cache.Select(x => x.Value).ToList().AsEnumerable());
+        return Task.FromResult(_requestCookies.Select(x => x.Value).ToList().AsEnumerable());
     }
 
     public Task<Cookie?> GetAsync(string key)
     {
-        if (_cache.TryGetValue(key, out var cookie)) return Task.FromResult<Cookie?>(cookie);
+        if (_requestCookies.TryGetValue(key, out var cookie)) return Task.FromResult<Cookie?>(cookie);
 
         return Task.FromResult<Cookie?>(null);
     }
 
     public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
-        if (!_cache.TryGetValue(key, out _)) return Task.CompletedTask;
+        if (RemovePending(key)) _logger.LogDebug("Pending cookie [{key}] removed.", key);
 
-        _cache.Remove(key);
-        _httpContext.Response.Cookies.Delete(key);
+        if (_requestCookies.Remove(key))
+        {
+            _logger.LogDebug("Removing client browser cookie [{key}] by marking it as expired.", key);
+            _httpContext.Response.Cookies.Delete(key);
+        }
 
         return Task.CompletedTask;
     }
@@ -40,26 +53,44 @@ internal class HttpContextCookieService : ICookieService
     public Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
         => SetAsync(new Cookie(key, value, expiration), cancellationToken);
 
-    public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
+    public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
-        var alreadyExists = _cache.TryGetValue(cookie.Key, out var existingCookie);
+        _logger.LogDebug("Setting cookie: '{key}'='{value}'", cookie.Key, cookie.Value);
 
-        if (alreadyExists)
-        {
-            // If the cookie already exists and the value has not changed,
-            // we don't need to update it.
-            if (existingCookie == cookie) return;
+        RemovePending(cookie.Key);
 
-            // If the cookie already exists and the new value has changed,
-            // we remove the old one before adding the new one.
-            await RemoveAsync(cookie.Key, cancellationToken);
-        }
-
-        _cache.Add(cookie.Key, cookie);
         _httpContext.Response.Cookies.Append(cookie.Key, cookie.Value, new CookieOptions
         {
             Expires = cookie.Expiration,
             Path = "/",
         });
+
+        return Task.CompletedTask;
+    }
+
+    private bool RemovePending(string key)
+    {
+        _logger.LogDebug("Checking for pending cookie: '{key}'", key);
+
+        var cookieValues = _responseHeaders
+            .SetCookie
+            .ToList();
+
+        for (int i = 0; i < cookieValues.Count; i++)
+        {
+            var value = cookieValues[i];
+            if (string.IsNullOrWhiteSpace(value)) continue;
+            if (!value.StartsWith($"{key}=")) continue;
+
+            _logger.LogDebug("Pending cookie [{key}] found, removing...", key);
+            cookieValues.RemoveAt(i);
+            _responseHeaders.SetCookie = new([.. cookieValues]);
+            _logger.LogDebug("Pending cookie [{key}] removed.", key);
+
+            return true;
+        }
+
+        _logger.LogDebug("No pending cookie found.");
+        return false;
     }
 }
