@@ -29,7 +29,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.Server", "src\BitzArt.Blazor.Cookies.Server\BitzArt.Blazor.Cookies.Server.csproj", "{9DDC9769-C0C6-452C-97E1-A11991976106}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Cookies.Server.Tests", "tests\BitzArt.Blazor.Cookies.Server.Tests\BitzArt.Blazor.Cookies.Server.Tests.csproj", "{117F8E5A-B3AB-4C0C-824C-656F0DD2AB15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Cookies.Server.Tests", "tests\BitzArt.Blazor.Cookies.Server.Tests\BitzArt.Blazor.Cookies.Server.Tests.csproj", "{117F8E5A-B3AB-4C0C-824C-656F0DD2AB15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{AB054034-9AA3-4FEB-90BC-19B33CAAADCC}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

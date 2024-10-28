@@ -43,8 +43,8 @@ public class HttpContextCookieServiceTests
         (var httpContext, _, var service) = CreateTestServices();
 
         // Act
-        await service.SetAsync("key", "value", null);
-        await service.SetAsync("key", "value", null);
+        await service.SetAsync("key", "value1", null);
+        await service.SetAsync("key", "value2", null);
 
         // Assert
         Assert.Single(httpContext.Response.Headers);

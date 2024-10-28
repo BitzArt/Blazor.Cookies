@@ -10,7 +10,7 @@ public static class AddBlazorCookiesExtension
     {
         builder.Services.AddHttpContextAccessor();
 
-        builder.Services.AddScoped<BrowserCookieService>();
+        builder.Services.AddScoped<JsInteropCookieService>();
         builder.Services.AddScoped<HttpContextCookieService>();
 
         builder.Services.AddScoped<ICookieService>(x =>
@@ -21,7 +21,7 @@ public static class AddBlazorCookiesExtension
 
             return isPrerendering
                 ? x.GetRequiredService<HttpContextCookieService>()
-                : x.GetRequiredService<BrowserCookieService>();
+                : x.GetRequiredService<JsInteropCookieService>();
         });
 
         return builder;
