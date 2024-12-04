@@ -11,7 +11,7 @@ internal class JsInteropCookieService(IJSRuntime js) : ICookieService
 
         return raw.Split("; ").Select(x =>
         {
-            var parts = x.Split("=");
+            var parts = x.Split("=", 2);
             if (parts.Length != 2) throw new Exception($"Invalid cookie format: '{x}'.");
             return new Cookie(parts[0], parts[1]);
         });
