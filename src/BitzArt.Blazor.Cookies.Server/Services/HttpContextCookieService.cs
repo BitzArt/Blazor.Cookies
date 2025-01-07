@@ -24,10 +24,14 @@ internal class HttpContextCookieService : ICookieService
         _responseHeaders = _httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers;
     }
 
+    // ======================================== GetAllAsync ========================================
+
     public Task<IEnumerable<Cookie>> GetAllAsync()
     {
         return Task.FromResult(_requestCookies.Select(x => x.Value).ToList().AsEnumerable());
     }
+
+    // ========================================  GetAsync  ========================================
 
     public Task<Cookie?> GetAsync(string key)
     {
@@ -36,24 +40,24 @@ internal class HttpContextCookieService : ICookieService
         return Task.FromResult<Cookie?>(null);
     }
 
-    public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
-    {
-        if (RemovePending(key)) _logger.LogDebug("Pending cookie [{key}] removed.", key);
+    // ========================================  SetAsync  ========================================
 
-        if (_requestCookies.Remove(key))
-        {
-            _logger.LogDebug("Removing client browser cookie [{key}] by marking it as expired.", key);
-            _httpContext.Response.Cookies.Delete(key);
-        }
-
-        return Task.CompletedTask;
-    }
+    public Task SetAsync(string key, string value, CancellationToken cancellationToken = default)
+        => SetAsync(key, value, expiration: null, cancellationToken);
 
     public Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
-        => SetAsync(new Cookie(key, value, expiration), cancellationToken);
+        => SetAsync(key, value, expiration, httpOnly: false, secure: false, cancellationToken);
+
+    public Task SetAsync(string key, string value, bool httpOnly, bool secure, CancellationToken cancellationToken = default)
+        => SetAsync(key, value, expiration: null, httpOnly, secure, cancellationToken);
+
+    public Task SetAsync(string key, string value, DateTimeOffset? expiration, bool httpOnly, bool secure, CancellationToken cancellationToken = default)
+        => SetAsync(new Cookie(key, value, expiration, httpOnly, secure), cancellationToken);
 
     public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
+        if (cookie.Secure && !cookie.HttpOnly) throw new InvalidOperationException("Unable to set a cookie: Secure cookies must also be HttpOnly.");
+
         _logger.LogDebug("Setting cookie: '{key}'='{value}'", cookie.Key, cookie.Value);
 
         RemovePending(cookie.Key);
@@ -62,6 +66,8 @@ internal class HttpContextCookieService : ICookieService
         {
             Expires = cookie.Expiration,
             Path = "/",
+            HttpOnly = cookie.HttpOnly,
+            Secure = cookie.Secure
         });
 
         return Task.CompletedTask;
@@ -91,5 +97,20 @@ internal class HttpContextCookieService : ICookieService
 
         _logger.LogDebug("No pending cookie found.");
         return false;
+    }
+
+    // ======================================== RemoveAsync ========================================
+
+    public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+    {
+        if (RemovePending(key)) _logger.LogDebug("Pending cookie [{key}] removed.", key);
+
+        if (_requestCookies.Remove(key))
+        {
+            _logger.LogDebug("Removing client browser cookie [{key}] by marking it as expired.", key);
+            _httpContext.Response.Cookies.Delete(key);
+        }
+
+        return Task.CompletedTask;
     }
 }

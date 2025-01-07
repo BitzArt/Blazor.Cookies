@@ -44,4 +44,28 @@ public class JsInteropCookieServiceTests
         // Assert
         Assert.Equal(cookieValue, result?.Value);
     }
+
+    [Fact]
+    public async Task SetAsync_WithHttpOnlyTrue_ShouldThrow()
+    {
+        // Arrange
+        var jsRuntime = new Mock<IJSRuntime>();
+
+        var sut = new JsInteropCookieService(jsRuntime.Object);
+
+        // Act + Assert
+        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.SetAsync("cookie-name", "cookie-value", httpOnly: true, secure: false));
+    }
+
+    [Fact]
+    public async Task SetAsync_WithSecureTrue_ShouldThrow()
+    {
+        // Arrange
+        var jsRuntime = new Mock<IJSRuntime>();
+
+        var sut = new JsInteropCookieService(jsRuntime.Object);
+
+        // Act + Assert
+        await Assert.ThrowsAnyAsync<Exception>(async () => await sut.SetAsync("cookie-name", "cookie-value", httpOnly: false, secure: true));
+    }
 }
