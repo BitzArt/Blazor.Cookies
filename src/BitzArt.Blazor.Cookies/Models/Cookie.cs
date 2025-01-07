@@ -1,0 +1,11 @@
+﻿namespace BitzArt.Blazor.Cookies;
+
+/// <summary>
+/// Browser cookie.
+/// </summary>
+/// <param name="Key"> The name of the cookie. </param>
+/// <param name="Value"> The value of the cookie. </param>
+/// <param name="Expiration"> The expiration date of the cookie. </param>
+/// <param name="HttpOnly"> Whether the cookie is inaccessible by client-side script. </param>
+/// <param name="Secure"> Whether to transmit the cookie using Secure Sockets Layer (SSL)--that is, over HTTPS only. </param>
+public record Cookie(string Key, string Value, DateTimeOffset? Expiration = null, bool HttpOnly = false, bool Secure = false) { }
