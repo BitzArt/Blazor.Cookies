@@ -36,7 +36,7 @@ public class HttpContextCookieServiceTests
 
         // Assert
         Assert.Empty(httpContext.Response.Headers);
-        Assert.True(httpContext.Response.Headers.SetCookie.Count == 0);
+        Assert.Equal(0, httpContext.Response.Headers.SetCookie.Count);
     }
 
     [Fact]
@@ -95,7 +95,25 @@ public class HttpContextCookieServiceTests
         Assert.Contains("secure", values.First());
     }
 
-    private static TestServices CreateTestServices()
+	[Theory]
+	[InlineData(SameSiteMode.None)]
+	[InlineData(SameSiteMode.Lax)]
+	[InlineData(SameSiteMode.Strict)]
+	public async Task SetCookie_WithSameSiteMode_ShouldSetSameSiteMode(SameSiteMode mode)
+	{
+		// Arrange
+		(var httpContext, _, var service) = CreateTestServices();
+
+		// Act
+		await service.SetAsync("key", "value", sameSiteMode: mode);
+
+		// Assert
+		var values = httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers.SetCookie;
+		Assert.Single(values);
+        Assert.Contains($"samesite={mode.ToString().ToLower()}", values.First());
+	}
+
+	private static TestServices CreateTestServices()
     {
         var httpContext = new DefaultHttpContext();
         var accessor = new HttpContextAccessor
