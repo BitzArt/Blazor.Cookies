@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 
-namespace BitzArt.Blazor.Cookies;
+namespace BitzArt.Blazor.Cookies.Server;
 
 internal class HttpContextCookieService : ICookieService
 {
@@ -11,7 +11,7 @@ internal class HttpContextCookieService : ICookieService
 
     private readonly ILogger _logger;
 
-    private IHeaderDictionary _responseHeaders { get; set; }
+    private IHeaderDictionary ResponseHeaders { get; set; }
 
     public HttpContextCookieService(IHttpContextAccessor httpContextAccessor, ILogger<ICookieService> logger)
     {
@@ -21,7 +21,7 @@ internal class HttpContextCookieService : ICookieService
         _requestCookies = _httpContext.Request.Cookies
             .Select(x => new Cookie(x.Key, x.Value)).ToDictionary(cookie => cookie.Key);
 
-        _responseHeaders = _httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers;
+        ResponseHeaders = _httpContext.Features.GetRequiredFeature<IHttpResponseFeature>().Headers;
     }
 
     // ======================================== GetAllAsync ========================================
@@ -42,17 +42,8 @@ internal class HttpContextCookieService : ICookieService
 
     // ========================================  SetAsync  ========================================
 
-    public Task SetAsync(string key, string value, CancellationToken cancellationToken = default)
-        => SetAsync(key, value, expiration: null, cancellationToken);
-
-    public Task SetAsync(string key, string value, DateTimeOffset? expiration, CancellationToken cancellationToken = default)
-        => SetAsync(key, value, expiration, httpOnly: false, secure: false, cancellationToken);
-
-    public Task SetAsync(string key, string value, bool httpOnly, bool secure, CancellationToken cancellationToken = default)
-        => SetAsync(key, value, expiration: null, httpOnly, secure, cancellationToken);
-
-    public Task SetAsync(string key, string value, DateTimeOffset? expiration, bool httpOnly, bool secure, CancellationToken cancellationToken = default)
-        => SetAsync(new Cookie(key, value, expiration, httpOnly, secure), cancellationToken);
+    public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)
+        => SetAsync(new Cookie(key, value, expiration, httpOnly, secure, sameSiteMode), cancellationToken);
 
     public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
@@ -67,7 +58,8 @@ internal class HttpContextCookieService : ICookieService
             Expires = cookie.Expiration,
             Path = "/",
             HttpOnly = cookie.HttpOnly,
-            Secure = cookie.Secure
+            Secure = cookie.Secure,
+            SameSite = cookie.SameSiteMode.ToHttp()
         });
 
         return Task.CompletedTask;
@@ -77,7 +69,7 @@ internal class HttpContextCookieService : ICookieService
     {
         _logger.LogDebug("Checking for pending cookie: '{key}'", key);
 
-        var cookieValues = _responseHeaders
+        var cookieValues = ResponseHeaders
             .SetCookie
             .ToList();
 
@@ -89,7 +81,7 @@ internal class HttpContextCookieService : ICookieService
 
             _logger.LogDebug("Pending cookie [{key}] found, removing...", key);
             cookieValues.RemoveAt(i);
-            _responseHeaders.SetCookie = new([.. cookieValues]);
+            ResponseHeaders.SetCookie = new([.. cookieValues]);
             _logger.LogDebug("Pending cookie [{key}] removed.", key);
 
             return true;

@@ -1,15 +1,31 @@
 ﻿@page "/cookies"
+@rendermode InteractiveAuto
 @inject ICookieService CookieService
 
-<PageTitle>Blazor.Cookies | Client-side rendered page</PageTitle>
+<PageTitle>Blazor.Cookies | Interactively rendered page</PageTitle>
+
+<div style="margin-top: 1rem;">
+    Current Renderer: @RendererInfo.Name
+</div>
 
 <div style="margin-top: 1rem;">
     <InputText @bind-Value="key" placeholder="key" />
     <InputText @bind-Value="value" placeholder="value" />
-    <div style="margin-top: 1rem;">
-        <button class="btn btn-primary" @onclick="SetCookieAsync">Set Cookie</button>
-        <button class="btn btn-primary" @onclick="RemoveCookieAsync">Remove Cookie</button>
-    </div>
+</div>
+
+<div style="margin-top: 1rem;">
+    SameSite Mode: 
+    <InputSelect TValue="SameSiteMode?" @bind-Value="sameSiteMode">
+        @foreach(var mode in _sameSiteModeValues)
+        {
+            <option value="@mode">@(mode!.Value.ToString())</option>
+        }
+    </InputSelect>
+</div>
+
+<div style="margin-top: 1rem;">
+    <button class="btn btn-primary" @onclick="SetCookieAsync">Set Cookie</button>
+    <button class="btn btn-primary" @onclick="RemoveCookieAsync">Remove Cookie</button>
 </div>
 
 <div style="margin-top: 1rem;">
@@ -21,6 +37,15 @@
     </div>
 </div>
 @code {
+
+    private IEnumerable<SameSiteMode?> _sameSiteModeValues =
+            [
+                SameSiteMode.None,
+                SameSiteMode.Lax,
+                SameSiteMode.Strict
+            ];
+
+    private SameSiteMode? sameSiteMode = null;
 
     private IEnumerable<Cookie>? cookies;
 
@@ -43,7 +68,7 @@
     {
         var expiration = DateTimeOffset.UtcNow.AddDays(1);
 
-        if (key is not null && value is not null) await CookieService.SetAsync(key, value, expiration);
+        if (key is not null && value is not null) await CookieService.SetAsync(key, value, expiration, sameSiteMode: sameSiteMode);
     
         await LoadCookiesAsync();
     }
