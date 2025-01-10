@@ -1,5 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using System.Text;
 
 namespace BitzArt.Blazor.Cookies;
 
@@ -31,22 +30,22 @@ internal class JsInteropCookieService(IJSRuntime js) : ICookieService
 
     // ========================================  SetAsync  ========================================
 
-	public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)
-		=> SetAsync(new Cookie(key, value, expiration, httpOnly, secure, sameSiteMode), cancellationToken);
+    public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)
+        => SetAsync(new Cookie(key, value, expiration, httpOnly, secure, sameSiteMode), cancellationToken);
 
-	public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
+    public async Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
         if (cookie.HttpOnly) throw new InvalidOperationException(HttpOnlyFlagErrorMessage);
         if (cookie.Secure) throw new InvalidOperationException(SecureFlagErrorMessage);
 
         if (string.IsNullOrWhiteSpace(cookie.Key)) throw new Exception("Key is required when setting a cookie.");
 
-		var cmd = JsCommand.SetCookie(cookie);
+        var cmd = JsCommand.SetCookie(cookie);
 
-		await js.InvokeVoidAsync("eval", cmd);
+        await js.InvokeVoidAsync("eval", cmd);
     }
 
-	private const string HttpOnlyFlagErrorMessage = $"HttpOnly cookies are not supported in this rendering environment. {CookieFlagsExplainMessage}";
+    private const string HttpOnlyFlagErrorMessage = $"HttpOnly cookies are not supported in this rendering environment. {CookieFlagsExplainMessage}";
     private const string SecureFlagErrorMessage = $"Secure cookies are not supported in this rendering environment. {CookieFlagsExplainMessage}";
     private const string CookieFlagsExplainMessage = "Setting HttpOnly or Secure cookies is only possible when using Static SSR render mode.";
 

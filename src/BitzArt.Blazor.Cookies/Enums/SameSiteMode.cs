@@ -7,19 +7,19 @@
 /// </summary>
 public enum SameSiteMode
 {
-	/// <summary>
-	/// Indicates the client should disable same-site restrictions.
-	/// </summary>
-	None = 0,
+    /// <summary>
+    /// Indicates the client should disable same-site restrictions.
+    /// </summary>
+    None = 0,
 
-	/// <summary>
-	/// Indicates the client should send the cookie with "same-site" requests, and with
-	/// "cross-site" top-level navigations.
-	/// </summary>
-	Lax = 1,
+    /// <summary>
+    /// Indicates the client should send the cookie with "same-site" requests, and with
+    /// "cross-site" top-level navigations.
+    /// </summary>
+    Lax = 1,
 
-	/// <summary>
-	/// Indicates the client should only send the cookie with "same-site" requests.
-	/// </summary>
-	Strict = 2
+    /// <summary>
+    /// Indicates the client should only send the cookie with "same-site" requests.
+    /// </summary>
+    Strict = 2
 }

@@ -1,7 +1,5 @@
 using Microsoft.JSInterop;
-using Microsoft.JSInterop.Infrastructure;
 using Moq;
-using System.Diagnostics.CodeAnalysis;
 
 namespace BitzArt.Blazor.Cookies.Tests;
 

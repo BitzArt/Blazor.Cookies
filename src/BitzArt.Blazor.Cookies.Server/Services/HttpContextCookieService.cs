@@ -40,12 +40,12 @@ internal class HttpContextCookieService : ICookieService
         return Task.FromResult<Cookie?>(null);
     }
 
-	// ========================================  SetAsync  ========================================
+    // ========================================  SetAsync  ========================================
 
-	public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)
-		=> SetAsync(new Cookie(key, value, expiration, httpOnly, secure, sameSiteMode), cancellationToken);
+    public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)
+        => SetAsync(new Cookie(key, value, expiration, httpOnly, secure, sameSiteMode), cancellationToken);
 
-	public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
+    public Task SetAsync(Cookie cookie, CancellationToken cancellationToken = default)
     {
         if (cookie.Secure && !cookie.HttpOnly) throw new InvalidOperationException("Unable to set a cookie: Secure cookies must also be HttpOnly.");
 
@@ -60,7 +60,7 @@ internal class HttpContextCookieService : ICookieService
             HttpOnly = cookie.HttpOnly,
             Secure = cookie.Secure,
             SameSite = cookie.SameSiteMode.ToHttp()
-		});
+        });
 
         return Task.CompletedTask;
     }
