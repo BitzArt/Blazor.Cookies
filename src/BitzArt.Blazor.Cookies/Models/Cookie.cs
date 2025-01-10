@@ -2,6 +2,12 @@
 
 /// <summary>
 /// Browser cookie.
+/// <para>
+/// <b>Note:</b> When retrieving a cookie, certain properties of the resulting cookie object may be unavailable. 
+/// This is because browsers do not expose these attributes of cookies to neither client-side or server-side code.
+/// Only the cookie's key and value are accessible, with the browser keeping other attributes
+/// (such as `HttpOnly`, `Secure`, and `SameSite`) hidden for security and privacy reasons.
+/// </para>
 /// </summary>
 /// <param name="Key"> The name of the cookie. </param>
 /// <param name="Value"> The value of the cookie. </param>
