@@ -75,7 +75,7 @@ public class Cookie
     private protected virtual void OnValueChanged(string value) { }
 
     /// <inheritdoc cref="Cookie(string, string, DateTimeOffset?, bool, bool, SameSiteMode?)"/>
-    public static Cookie<T> FromValue<T>(string key, T value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, JsonSerializerOptions jsonSerializerOptions = null)
+    public static Cookie<T> FromValue<T>(string key, T value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, JsonSerializerOptions? jsonSerializerOptions = null)
         => new(key, value, expiration, httpOnly, secure, sameSiteMode, jsonSerializerOptions);
 
     /// <summary>
@@ -100,7 +100,7 @@ public class Cookie
 /// <typeparam name="T"> Type of the cookie value. </typeparam>
 public class Cookie<T> : Cookie
 {
-    private T? _value;
+    private protected new T? _value;
 
     /// <summary>
     /// The value of the cookie.

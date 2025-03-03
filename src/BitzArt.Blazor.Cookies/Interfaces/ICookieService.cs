@@ -18,7 +18,7 @@ public interface ICookieService
     /// </summary>
     public Task<IEnumerable<Cookie>> GetAllAsync();
 
-    /// <inheritdoc cref="GetAsync{T}(string)"/>
+    /// <inheritdoc cref="GetAsync{T}(string,JsonSerializerOptions)"/>
     public Task<Cookie?> GetAsync(string key);
 
     /// <summary>

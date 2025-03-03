@@ -59,7 +59,7 @@ public class SerializedCookieTests
         var newValueSerialized = JsonSerializer.Serialize(newValue);
 
         // Act
-        (cookie as Cookie).Value = JsonSerializer.Serialize(newValue);
+        (cookie as Cookie).Value = newValueSerialized;
 
         // Assert
         Assert.NotEqual(initialValue, newValue);
