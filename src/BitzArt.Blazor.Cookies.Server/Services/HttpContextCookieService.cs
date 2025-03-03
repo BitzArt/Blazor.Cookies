@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace BitzArt.Blazor.Cookies.Server;
 
@@ -38,6 +39,15 @@ internal class HttpContextCookieService : ICookieService
         if (_requestCookies.TryGetValue(key, out var cookie)) return Task.FromResult<Cookie?>(cookie);
 
         return Task.FromResult<Cookie?>(null);
+    }
+
+    public Task<Cookie<T>?> GetAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        if (_requestCookies.TryGetValue(key, out var cookie))
+        {
+            return Task.FromResult<Cookie<T>?>(cookie.Cast<T>(jsonSerializerOptions));
+        }
+        return Task.FromResult<Cookie<T>?>(null);
     }
 
     // ========================================  SetAsync  ========================================
