@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using System.Text.Json;
 
 namespace BitzArt.Blazor.Cookies;
 
@@ -19,13 +20,20 @@ internal class JsInteropCookieService(IJSRuntime js) : ICookieService
     private Cookie GetCookie(string raw)
     {
         var parts = raw.Split("=", 2);
-        return new Cookie(parts[0], parts[1], null, HttpOnly: false, Secure: false);
+        return new Cookie(parts[0], parts[1], null, httpOnly: false, secure: false);
     }
 
     public async Task<Cookie?> GetAsync(string key)
     {
         var cookies = await GetAllAsync();
         return cookies.FirstOrDefault(x => x.Key == key);
+    }
+
+    public async Task<Cookie<T>?> GetAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        var cookie = await GetAsync(key);
+        if (cookie is null) return null;
+        return cookie.Cast<T>(jsonSerializerOptions);
     }
 
     // ========================================  SetAsync  ========================================

@@ -1,4 +1,6 @@
-﻿namespace BitzArt.Blazor.Cookies;
+﻿using System.Text.Json;
+
+namespace BitzArt.Blazor.Cookies;
 
 /// <summary>
 /// Allows interacting with browser cookies.
@@ -16,6 +18,9 @@ public interface ICookieService
     /// </summary>
     public Task<IEnumerable<Cookie>> GetAllAsync();
 
+    /// <inheritdoc cref="GetAsync{T}(string,JsonSerializerOptions)"/>
+    public Task<Cookie?> GetAsync(string key);
+
     /// <summary>
     /// Retrieves a cookie by its key.
     /// <para>
@@ -25,9 +30,11 @@ public interface ICookieService
     /// (such as `HttpOnly`, `Secure`, and `SameSite`) hidden for security and privacy reasons.
     /// </para>
     /// </summary>
-    /// <param name="key"> The key of the cookie to retrieve. </param>
-    /// <returns> The requested cookie, or null if it does not exist. </returns>
-    public Task<Cookie?> GetAsync(string key);
+    /// <param name="key"> Key of the cookie to retrieve. </param>
+    /// <param name="jsonSerializerOptions"> JSON serializer options to use when deserializing cookie value. </param>
+    /// <returns> The requested cookie, or null if it was not found. </returns>
+    /// <typeparam name="T"> Type of the cookie value. </typeparam>
+    public Task<Cookie<T>?> GetAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null);
 
     /// <summary>
     /// Removes a cookie by marking it as expired.
