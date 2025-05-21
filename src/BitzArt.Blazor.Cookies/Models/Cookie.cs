@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace BitzArt.Blazor.Cookies;
 
@@ -85,7 +86,7 @@ public class Cookie
     /// <param name="jsonSerializerOptions">JSON serializer options to use when deserializing the value.</param>
     /// <returns><see cref="Cookie{T}"/>, where T: <typeparamref name="T"/>.</returns>
     public Cookie<T> Cast<T>(JsonSerializerOptions? jsonSerializerOptions = null)
-        => new(Key, JsonSerializer.Deserialize<T>(Value, jsonSerializerOptions ?? new())!, Expiration, HttpOnly, Secure, SameSiteMode, jsonSerializerOptions);
+        => new(Key, Cookie<T>.DecodeValue(Value, jsonSerializerOptions ?? new())!, Expiration, HttpOnly, Secure, SameSiteMode, jsonSerializerOptions);
 }
 
 /// <summary>
@@ -111,13 +112,13 @@ public class Cookie<T> : Cookie
         set
         {
             _value = value;
-            base._value = JsonSerializer.Serialize(value, JsonSerializerOptions);
+            base._value = EncodeValue(value, JsonSerializerOptions);
         }
     }
 
     private protected override void OnValueChanged(string value)
     {
-        _value = JsonSerializer.Deserialize<T>(base.Value, JsonSerializerOptions);
+        _value = DecodeValue(base.Value, JsonSerializerOptions);
     }
 
     /// <summary>
@@ -125,11 +126,28 @@ public class Cookie<T> : Cookie
     /// </summary>
     public JsonSerializerOptions JsonSerializerOptions { get; set; } = new();
 
-    /// <inheritdoc cref="Cookie(string, string, DateTimeOffset?, bool, bool, SameSiteMode?)"/>/>
+    /// <inheritdoc cref="Cookie(string, string, DateTimeOffset?, bool, bool, SameSiteMode?)"/>
     public Cookie(string key, T value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, JsonSerializerOptions? jsonSerializerOptions = null)
-        : base(key, JsonSerializer.Serialize(value, jsonSerializerOptions ?? new()), expiration, httpOnly, secure, sameSiteMode)
+        : base(key, EncodeValue(value, jsonSerializerOptions ?? new()), expiration, httpOnly, secure, sameSiteMode)
     {
         _value = value;
         JsonSerializerOptions = jsonSerializerOptions ?? new();
+    }
+
+    internal static string EncodeValue(T? value, JsonSerializerOptions? jsonSerializerOptions)
+    {
+        if (value is null) return string.Empty;
+
+        var json = JsonSerializer.Serialize(value, jsonSerializerOptions);
+        var base64Encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        return base64Encoded;
+    }
+
+    internal static T? DecodeValue(string value, JsonSerializerOptions? jsonSerializerOptions)
+    {
+        var base64Decoded = Convert.FromBase64String(value);
+        var json = Encoding.UTF8.GetString(base64Decoded);
+        var deserialized = JsonSerializer.Deserialize<T>(json, jsonSerializerOptions);
+        return deserialized;
     }
 }
