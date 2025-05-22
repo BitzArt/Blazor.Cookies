@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace BitzArt.Blazor.Cookies;
 
@@ -16,7 +17,9 @@ public class SerializedCookieTests
         // Assert
         Assert.Equal("test-cookie", cookie.Key);
 
-        var expectedStringValue = JsonSerializer.Serialize(value);
+        var json = JsonSerializer.Serialize(value);
+        var expectedStringValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+
         var stringValue = (cookie as Cookie).Value;
 
         Assert.Equal(expectedStringValue, stringValue);
@@ -39,13 +42,16 @@ public class SerializedCookieTests
         Assert.NotEqual(initialValue, cookie.Value);
         Assert.Equal(newValue, cookie.Value);
 
-        var initialStringValue = JsonSerializer.Serialize(initialValue);
-        var expectedStringValue = JsonSerializer.Serialize(newValue);
+        var initialValueSerialized = JsonSerializer.Serialize(initialValue);
+        var initialValueEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(initialValueSerialized));
+
+        var expectedValueSerialized = JsonSerializer.Serialize(newValue);
+        var expectedValueEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(expectedValueSerialized));
 
         var stringValue = (cookie as Cookie).Value;
 
-        Assert.NotEqual(initialStringValue, stringValue);
-        Assert.Equal(expectedStringValue, stringValue);
+        Assert.NotEqual(initialValueEncoded, stringValue);
+        Assert.Equal(expectedValueEncoded, stringValue);
     }
 
     [Fact]
@@ -57,9 +63,10 @@ public class SerializedCookieTests
 
         var newValue = new TestPayload("new value");
         var newValueSerialized = JsonSerializer.Serialize(newValue);
+        var newValueEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(newValueSerialized));
 
         // Act
-        (cookie as Cookie).Value = newValueSerialized;
+        (cookie as Cookie).Value = newValueEncoded;
 
         // Assert
         Assert.NotEqual(initialValue, newValue);
