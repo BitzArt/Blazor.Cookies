@@ -134,7 +134,7 @@ public class Cookie<T> : Cookie
         JsonSerializerOptions = jsonSerializerOptions ?? new();
     }
 
-    internal static string EncodeValue(T? value, JsonSerializerOptions? jsonSerializerOptions)
+    internal static string EncodeValue(T? value, JsonSerializerOptions jsonSerializerOptions)
     {
         if (value is null) return string.Empty;
 
@@ -143,7 +143,7 @@ public class Cookie<T> : Cookie
         return base64Encoded;
     }
 
-    internal static T? DecodeValue(string value, JsonSerializerOptions? jsonSerializerOptions)
+    internal static T? DecodeValue(string value, JsonSerializerOptions jsonSerializerOptions)
     {
         var base64Decoded = Convert.FromBase64String(value);
         var json = Encoding.UTF8.GetString(base64Decoded);
