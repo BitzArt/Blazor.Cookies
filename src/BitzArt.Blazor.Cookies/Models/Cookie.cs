@@ -86,7 +86,13 @@ public class Cookie
     /// <param name="jsonSerializerOptions">JSON serializer options to use when deserializing the value.</param>
     /// <returns><see cref="Cookie{T}"/>, where T: <typeparamref name="T"/>.</returns>
     public Cookie<T> Cast<T>(JsonSerializerOptions? jsonSerializerOptions = null)
-        => new(Key, Cookie<T>.DecodeValue(Value, jsonSerializerOptions ?? new())!, Expiration, HttpOnly, Secure, SameSiteMode, jsonSerializerOptions);
+    {
+        if (string.IsNullOrWhiteSpace(Value))
+        {
+            throw new InvalidOperationException("Cannot cast a cookie with an empty value. Ensure the cookie has been set before casting.");
+        }
+        return new(Key, Cookie<T>.DecodeValue(Value, jsonSerializerOptions ?? new())!, Expiration, HttpOnly, Secure, SameSiteMode, jsonSerializerOptions);
+    }
 }
 
 /// <summary>
@@ -145,6 +151,10 @@ public class Cookie<T> : Cookie
 
     internal static T? DecodeValue(string value, JsonSerializerOptions jsonSerializerOptions)
     {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return (T?)(object?)null;
+        }
         var base64Decoded = Convert.FromBase64String(value);
         var json = Encoding.UTF8.GetString(base64Decoded);
         var deserialized = JsonSerializer.Deserialize<T>(json, jsonSerializerOptions);

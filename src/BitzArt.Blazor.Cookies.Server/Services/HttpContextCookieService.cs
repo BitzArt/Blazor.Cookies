@@ -50,6 +50,51 @@ internal class HttpContextCookieService : ICookieService
         return Task.FromResult<Cookie<T>?>(null);
     }
 
+    public Task<Cookie<T>> GetAsync<T>(string key, Func<T> getDefaultValue, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        try
+        {
+            if (_requestCookies.TryGetValue(key, out var cookie))
+            {
+                return Task.FromResult(cookie.Cast<T>(jsonSerializerOptions));
+            }
+            return Task.FromResult(Cookie.FromValue(key, getDefaultValue.Invoke()));
+        }
+        catch
+        {
+            return Task.FromResult(Cookie.FromValue(key, getDefaultValue.Invoke()));
+        }
+    }
+
+    public async Task<T?> GetValueAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        var cookie = await GetAsync<T>(key);
+        if (cookie is null) return (T?)(object?)null;
+        return cookie.Value;
+    }
+
+    public async Task<T> GetValueAsync<T>(string key, Func<T> getDefault, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        try
+        {
+            var cookie = await GetAsync<T>(key);
+            if (cookie is null)
+            {
+                return getDefault.Invoke();
+            }
+            if (cookie.Value is null)
+            {
+                return getDefault.Invoke();
+            }
+
+            return cookie.Value;
+        }
+        catch
+        {
+            return getDefault.Invoke();
+        }
+    }
+
     // ========================================  SetAsync  ========================================
 
     public Task SetAsync(string key, string value, DateTimeOffset? expiration = null, bool httpOnly = false, bool secure = false, SameSiteMode? sameSiteMode = null, CancellationToken cancellationToken = default)

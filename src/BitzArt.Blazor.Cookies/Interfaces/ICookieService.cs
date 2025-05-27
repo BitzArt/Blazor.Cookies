@@ -21,6 +21,9 @@ public interface ICookieService
     /// <inheritdoc cref="GetAsync{T}(string,JsonSerializerOptions)"/>
     public Task<Cookie?> GetAsync(string key);
 
+    /// <inheritdoc cref="GetAsync{T}(string,Func{T},JsonSerializerOptions)"/>
+    public Task<Cookie<T>?> GetAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null);
+
     /// <summary>
     /// Retrieves a cookie by its key.
     /// <para>
@@ -30,11 +33,31 @@ public interface ICookieService
     /// (such as `HttpOnly`, `Secure`, and `SameSite`) hidden for security and privacy reasons.
     /// </para>
     /// </summary>
-    /// <param name="key"> Key of the cookie to retrieve. </param>
+    /// <param name="key">Key of the cookie to retrieve. </param>
+    /// <param name="getDefaultValue">Default value initializer to use if the cookie is not found or for some reason failed to deserialize.</param>
     /// <param name="jsonSerializerOptions"> JSON serializer options to use when deserializing cookie value. </param>
     /// <returns> The requested cookie, or null if it was not found. </returns>
     /// <typeparam name="T"> Type of the cookie value. </typeparam>
-    public Task<Cookie<T>?> GetAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null);
+    public Task<Cookie<T>> GetAsync<T>(string key, Func<T> getDefaultValue, JsonSerializerOptions? jsonSerializerOptions = null);
+
+    /// <inheritdoc cref="GetValueAsync{T}(string,Func{T},JsonSerializerOptions)"/>
+    public Task<T?> GetValueAsync<T>(string key, JsonSerializerOptions? jsonSerializerOptions = null);
+
+    /// <summary>
+    /// Retrieves a cookie by its key.
+    /// <para>
+    /// <b>Note:</b> When retrieving a cookie, certain properties of the resulting cookie object may be unavailable. 
+    /// This is because browsers do not expose these attributes of cookies to neither client-side or server-side code.
+    /// Only the cookie's key and value are accessible, with the browser keeping other attributes
+    /// (such as `HttpOnly`, `Secure`, and `SameSite`) hidden for security and privacy reasons.
+    /// </para>
+    /// </summary>
+    /// <param name="key">Key of the cookie to retrieve. </param>
+    /// <param name="getDefault">Default value initializer to use if the cookie is not found or for some reason failed to deserialize.</param>
+    /// <param name="jsonSerializerOptions"> JSON serializer options to use when deserializing cookie value. </param>
+    /// <returns> The requested cookie, or null if it was not found. </returns>
+    /// <typeparam name="T"> Type of the cookie value. </typeparam>
+    public Task<T> GetValueAsync<T>(string key, Func<T> getDefault, JsonSerializerOptions? jsonSerializerOptions = null);
 
     /// <summary>
     /// Removes a cookie by marking it as expired.
