@@ -7,12 +7,12 @@ public static class AddBlazorCookiesExtension
 {
     public static WebAssemblyHostBuilder AddBlazorCookies(this WebAssemblyHostBuilder builder, ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        builder.Services.AddBlazorCookiesClient(lifetime);
+        builder.Services.AddBlazorCookiesClientSideServices(lifetime);
 
         return builder;
     }
 
-    private static IServiceCollection AddBlazorCookiesClient(this IServiceCollection services, ServiceLifetime lifetime)
+    public static IServiceCollection AddBlazorCookiesClientSideServices(this IServiceCollection services, ServiceLifetime lifetime)
     {
         services.Add(new ServiceDescriptor(typeof(ICookieService), typeof(JsInteropCookieService), lifetime));
 

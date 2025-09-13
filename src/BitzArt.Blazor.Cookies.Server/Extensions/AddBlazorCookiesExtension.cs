@@ -9,12 +9,18 @@ public static class AddBlazorCookiesExtension
 {
     public static IHostApplicationBuilder AddBlazorCookies(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddBlazorCookiesServerSideServices();
+        return builder;
+    }
 
-        builder.Services.AddScoped<JsInteropCookieService>();
-        builder.Services.AddScoped<HttpContextCookieService>();
+    public static IServiceCollection AddBlazorCookiesServerSideServices(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
 
-        builder.Services.AddScoped<ICookieService>(x =>
+        services.AddScoped<JsInteropCookieService>();
+        services.AddScoped<HttpContextCookieService>();
+
+        services.AddScoped<ICookieService>(x =>
         {
             var httpContextAccessor = x.GetRequiredService<IHttpContextAccessor>();
             var httpContext = httpContextAccessor.HttpContext;
@@ -25,6 +31,6 @@ public static class AddBlazorCookiesExtension
                 : x.GetRequiredService<JsInteropCookieService>();
         });
 
-        return builder;
+        return services;
     }
 }
