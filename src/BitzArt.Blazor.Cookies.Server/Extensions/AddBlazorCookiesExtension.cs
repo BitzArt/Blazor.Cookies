@@ -5,8 +5,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace BitzArt.Blazor.Cookies;
 
+/// <summary>
+/// Extension methods for registering server-side <c>Blazor.Cookies</c> services.
+/// </summary>
 public static class AddBlazorCookiesExtension
 {
+    /// <summary>
+    /// Registers server-side <c>Blazor.Cookies</c> services.
+    /// </summary>
+    /// <param name="builder">An <see cref="IHostApplicationBuilder"/> to add the services to.</param>
+    /// <returns><see cref="IHostApplicationBuilder"/> for method chaining. </returns>
     public static IHostApplicationBuilder AddBlazorCookies(this IHostApplicationBuilder builder)
     {
         builder.Services.AddBlazorCookiesServerSideServices();
