@@ -1,4 +1,4 @@
-name: Release Blazor.Cookies
+﻿name: Release Blazor.Cookies
 
 on:
   repository_dispatch:
@@ -12,9 +12,12 @@ env:
 
 jobs:
 
-  Cookies:
-    name: Cookies
+  release:
+    name: Release Blazor.Cookies
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
 
       - name: Checkout
@@ -23,7 +26,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.x'
+          dotnet-version: '10.x'
 
       - name: Verify commit
         run: |
@@ -38,8 +41,20 @@ jobs:
           dotnet build Blazor.Cookies.sln --configuration Release /p:Version=${VERSION}
           dotnet pack Blazor.Cookies.sln --configuration Release /p:Version=${VERSION} --no-build --output .
 
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
       - name: Push
         run: |
           dotnet nuget push BitzArt.Blazor.Cookies.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
           dotnet nuget push BitzArt.Blazor.Cookies.Client.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
           dotnet nuget push BitzArt.Blazor.Cookies.Server.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_APIKEY}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 🍪 Blazor.Cookies v${{ env.VERSION }}
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            *.${{ env.VERSION }}.nupkg
