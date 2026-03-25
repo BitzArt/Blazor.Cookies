@@ -28,7 +28,7 @@ namespace BitzArt.Blazor.Cookies.SampleApp
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseStaticFiles();
+            app.MapStaticAssets();
             app.UseAntiforgery();
 
             app.MapRazorComponents<App>()
