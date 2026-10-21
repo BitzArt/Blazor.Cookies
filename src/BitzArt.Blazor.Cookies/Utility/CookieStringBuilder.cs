@@ -3,13 +3,11 @@ using System.Web;
 
 namespace BitzArt.Blazor.Cookies;
 
-internal static class JsCommand
+internal static class CookieStringBuilder
 {
-    public static string SetCookie(Cookie cookie)
+    public static string Build(Cookie cookie)
     {
         var builder = new StringBuilder();
-
-        builder.Append("document.cookie = \"");
 
         var keyEncoded = HttpUtility.UrlEncode(cookie.Key);
         var valueEncoded = HttpUtility.UrlEncode(cookie.Value);
@@ -23,8 +21,6 @@ internal static class JsCommand
             builder.Append("; ");
             builder.Append($"SameSite={cookie.SameSiteMode.Value.ToString()}");
         }
-
-        builder.Append('\"');
 
         return builder.ToString();
     }

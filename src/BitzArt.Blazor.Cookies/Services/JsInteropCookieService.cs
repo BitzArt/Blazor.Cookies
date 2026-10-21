@@ -4,13 +4,18 @@ using System.Web;
 
 namespace BitzArt.Blazor.Cookies;
 
-internal class JsInteropCookieService(IJSRuntime js) : ICookieService
+internal class JsInteropCookieService(IJSRuntime js) : ICookieService, IAsyncDisposable
 {
+    private readonly SemaphoreSlim _moduleLock = new(1, 1);
+    private IJSObjectReference? _module;
+    private bool _disposed;
+
     // ======================================== GetAllAsync ========================================
 
     public async Task<IEnumerable<Cookie>> GetAllAsync()
     {
-        var raw = await js.InvokeAsync<string>("eval", "document.cookie");
+        var module = await GetModuleAsync();
+        var raw = await module.InvokeAsync<string>("getCookies");
         if (string.IsNullOrWhiteSpace(raw)) return [];
 
         return raw.Split("; ").Select(GetCookie);
@@ -102,9 +107,10 @@ internal class JsInteropCookieService(IJSRuntime js) : ICookieService
 
         if (string.IsNullOrWhiteSpace(cookie.Key)) throw new Exception("Key is required when setting a cookie.");
 
-        var cmd = JsCommand.SetCookie(cookie);
+        var cookieString = CookieStringBuilder.Build(cookie);
+        var module = await GetModuleAsync(cancellationToken);
 
-        await js.InvokeVoidAsync("eval", cmd);
+        await module.InvokeVoidAsync("setCookie", cancellationToken, cookieString);
     }
 
     private const string HttpOnlyFlagErrorMessage = $"HttpOnly cookies are not supported in this rendering environment. {CookieFlagsExplainMessage}";
@@ -116,6 +122,55 @@ internal class JsInteropCookieService(IJSRuntime js) : ICookieService
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key)) throw new Exception("Key is required when removing a cookie.");
-        await js.InvokeVoidAsync("eval", $"document.cookie = \"{key}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/\"");
+
+        var keyEncoded = HttpUtility.UrlEncode(key);
+        var cookieString = $"{keyEncoded}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/";
+        var module = await GetModuleAsync(cancellationToken);
+
+        await module.InvokeVoidAsync("setCookie", cancellationToken, cookieString);
+    }
+
+    private async Task<IJSObjectReference> GetModuleAsync(CancellationToken cancellationToken = default)
+    {
+        await _moduleLock.WaitAsync(cancellationToken);
+        try
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+
+            _module ??= await js.InvokeAsync<IJSObjectReference>(
+                "import", cancellationToken, "./_content/BitzArt.Blazor.Cookies/cookies.js");
+
+            return _module;
+        }
+        finally
+        {
+            _moduleLock.Release();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _moduleLock.WaitAsync();
+        try
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            if (_module is not null)
+            {
+                try
+                {
+                    await _module.DisposeAsync();
+                }
+                catch (JSDisconnectedException)
+                {
+                    // The browser reference cannot be released after the circuit disconnects.
+                }
+            }
+        }
+        finally
+        {
+            _moduleLock.Release();
+        }
     }
 }
